@@ -12,7 +12,18 @@
     />
   </head>
   <body>
-  
+    <header class="header">
+      <form class="search-form" id="search-form">
+        <input type="text" name="searchQuery" autocomplete="off" placeholder="Search images..." />
+        <button type="submit">Search</button>
+      </form>
+    </header>
+    <main>
+      <div class="gallery">
+        <!-- Карточки изображений -->
+      </div>
+      <button type="button" class="load-more js-btn">Load more</button>
+    </main>
     <script src="./index.js"></script>
   </body>
 </html>
