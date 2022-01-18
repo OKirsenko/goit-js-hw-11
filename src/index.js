@@ -21,26 +21,28 @@ let keyWorld = '';
 
 function onInputSubmit(event) {
   event.preventDefault();
+  pageCount = 1;
   if (galleryEl.hasAttribute('data-rendered')) {
     galleryEl.removeAttribute('data-rendered');
   }
-  pageCount = 1;
-  moreBtn.classList.remove('js-btn');
+  if (moreBtn.classList.contains('js-btn')) {
+    moreBtn.classList.remove('js-btn');
+  }
   keyWorld = formEl.elements.searchQuery.value;
   reqServer(keyWorld, pageCount);
 }
 
-function reqServer(keyWorld, pageCount) {
-  return axios.get(`${baseUrl}&q=${keyWorld}&page=${pageCount}`).then(res => renderMakup(res));
+async function reqServer(keyWorld, pageCount) {
+  try {
+    const result = await axios.get(`${baseUrl}&q=${keyWorld}&page=${pageCount}`);
+    renderMakup(result);
+  } catch (error) {
+    console.log(error);
+    Notiflix.Notify.failure('Ooops, something wrong happens...my bad!');
+  }
 }
 function renderMakup(res) {
   const totalPages = res.data.totalHits / 40;
-  console.log(pageCount);
-  if (pageCount > totalPages) {
-    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
-    moreBtn.classList.add('js-btn');
-  }
-
   const data = res.data.hits;
 
   if (data.length === 0) {
@@ -49,6 +51,12 @@ function renderMakup(res) {
     );
     return;
   }
+
+  if (pageCount > totalPages) {
+    Notiflix.Notify.failure("We're sorry, but you've reached the end of search results.");
+    moreBtn.classList.add('js-btn');
+  }
+
   const markup = data
     .map(
       card => `
